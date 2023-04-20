@@ -1,11 +1,7 @@
 part of 'featured_books_cubit.dart';
 
-abstract class FeaturedBooksState extends Equatable {
-  const FeaturedBooksState();
-
-  @override
-  List<Object> get props => [];
-}
+@immutable
+abstract class FeaturedBooksState {}
 
 class FeaturedBooksInitial extends FeaturedBooksState {}
 
@@ -14,11 +10,11 @@ class FeaturedBooksLoading extends FeaturedBooksState {}
 class FeaturedBooksFailure extends FeaturedBooksState {
   final String errMessage;
 
-  const FeaturedBooksFailure(this.errMessage);
+  FeaturedBooksFailure(this.errMessage);
 }
 
 class FeaturedBooksSuccess extends FeaturedBooksState {
-  final List<BookModel> books;
+  final List<BookEntity> books;
 
-  const FeaturedBooksSuccess(this.books);
+  FeaturedBooksSuccess(this.books);
 }

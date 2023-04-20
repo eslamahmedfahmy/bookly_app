@@ -1,21 +1,22 @@
 import 'package:bloc/bloc.dart';
-import 'package:bookly_app/Features/home/data/models/book_model/book_model.dart';
-import 'package:bookly_app/Features/home/data/repos/home_repo.dart';
-import 'package:equatable/equatable.dart';
+import 'package:bookly_app/Features/home/domain/entities/book_entity.dart';
+import 'package:bookly_app/Features/home/domain/use_cases/fetch_newest_books_use_case.dart';
+import 'package:meta/meta.dart';
 
-part 'newset_books_state.dart';
+part 'newest_books_state.dart';
 
-class NewsetBooksCubit extends Cubit<NewsetBooksState> {
-  NewsetBooksCubit(this.homeRepo) : super(NewsetBooksInitial());
+class NewestBooksCubit extends Cubit<NewestBooksState> {
+  NewestBooksCubit(this.fetchNewestdBooksUseCase) : super(NewestBooksInitial());
 
-  final HomeRepo homeRepo;
+  final FetchNewestdBooksUseCase fetchNewestdBooksUseCase;
+
   Future<void> fetchNewestBooks() async {
-    emit(NewsetBooksLoading());
-    var result = await homeRepo.fetchNewsetBooks();
+    emit(NewestBooksLoading());
+    var result = await fetchNewestdBooksUseCase.call();
     result.fold((failure) {
-      emit(NewsetBooksFailure(failure.errMessage));
+      emit(NewestBooksFailure(failure.message));
     }, (books) {
-      emit(NewsetBooksSuccess(books));
+      emit(NewestBooksSuccess(books));
     });
   }
 }
