@@ -1,46 +1,54 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
 
 abstract class Failure {
-  final String message;
-
-  Failure(this.message);
+  final String errorMessage;
+  Failure(this.errorMessage);
 }
 
 class ServerFailure extends Failure {
-  ServerFailure(super.message);
+  ServerFailure(super.errorMessage);
 
-  factory ServerFailure.fromDiorError(DioError e) {
-    switch (e.type) {
+  factory ServerFailure.fromDioError(DioError dioError) {
+    switch (dioError.type) {
       case DioErrorType.connectionTimeout:
-        return ServerFailure('Connection timeout with api server');
-
+        return ServerFailure('Connection timeout');
       case DioErrorType.sendTimeout:
-        return ServerFailure('Send timeout with ApiServer');
+        return ServerFailure('Send Timeout');
       case DioErrorType.receiveTimeout:
-        return ServerFailure('Receive timeout with ApiServer');
+        return ServerFailure('Receive Timeout');
       case DioErrorType.badCertificate:
-        return ServerFailure('badCertificate with api server');
+        return ServerFailure(
+            'The connection to the server could not be established');
       case DioErrorType.badResponse:
         return ServerFailure.fromResponse(
-            e.response!.statusCode!, e.response!.data);
+            dioError.response!.statusCode!, dioError.response!.data);
       case DioErrorType.cancel:
-        return ServerFailure('Request to ApiServer was canceld');
+        return ServerFailure('Request Canceled');
       case DioErrorType.connectionError:
-        return ServerFailure('No Internet Connection');
+        return ServerFailure('Connection Error,please try again!');
       case DioErrorType.unknown:
-        return ServerFailure('Opps There was an Error, Please try again');
+        if (dioError.error is SocketException) {
+          return ServerFailure(
+              'No Internet Connection, please check your internet and try again');
+        } else {
+          return ServerFailure('Opps There Was An Error, please try again!');
+        }
+
+      default:
+        return ServerFailure('Opps There Was An Error, please try again!');
     }
   }
 
   factory ServerFailure.fromResponse(int statusCode, dynamic response) {
-    if (statusCode == 404) {
-      return ServerFailure('Your request was not found, please try later');
-    } else if (statusCode == 500) {
-      return ServerFailure('There is a problem with server, please try later');
-    } else if (statusCode == 400 || statusCode == 401 || statusCode == 403) {
+    if (statusCode == 400 || statusCode == 401 || statusCode == 403) {
       return ServerFailure(response['error']['message']);
+    } else if (statusCode == 404) {
+      return ServerFailure('Request Not Found,please try later!');
+    } else if (statusCode == 500) {
+      return ServerFailure('Internal Server Error,please try later!');
     } else {
-      return ServerFailure('There was an error , please try again');
+      return ServerFailure('Opps There Was An Error, please try again!');
     }
   }
 }

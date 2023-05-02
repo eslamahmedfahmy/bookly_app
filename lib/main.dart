@@ -1,61 +1,41 @@
 import 'package:bookly_app/Features/home/data/repos/home_repo_impl.dart';
-import 'package:bookly_app/Features/home/domain/entities/book_entity.dart';
-import 'package:bookly_app/Features/home/domain/use_cases/fetch_featured_books_use_case.dart';
-import 'package:bookly_app/Features/home/domain/use_cases/fetch_newest_books_use_case.dart';
-import 'package:bookly_app/Features/home/presentation/manger/featured_books_cubit/featured_books_cubit.dart';
-import 'package:bookly_app/Features/home/presentation/manger/newest_books_cubit/newset_books_cubit.dart';
+import 'package:bookly_app/Features/home/presentation/manger/cubit/featured_books_cubit/featured_books_cubit.dart';
+import 'package:bookly_app/Features/home/presentation/manger/cubit/newest_books_cubit/newest_books_cubit.dart';
 import 'package:bookly_app/constants.dart';
 import 'package:bookly_app/core/utils/app_router.dart';
-import 'package:bookly_app/core/utils/function/setup_service_locator.dart';
+import 'package:bookly_app/core/utils/service_locator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hive_flutter/adapters.dart';
 
-
-void main() async {
-  await Hive.initFlutter();
-  Hive.registerAdapter(BookEntityAdapter());
-  setupServiceLocator();
-  await Hive.openBox<BookEntity>(kFeaturedBox);
-  await Hive.openBox<BookEntity>(kNewestBox);
-  runApp(const Bookly());
+void main() {
+  setUpGetIt();
+  runApp(const BooklyApp());
 }
 
-class Bookly extends StatelessWidget {
-  const Bookly({Key? key}) : super(key: key);
+class BooklyApp extends StatelessWidget {
+  const BooklyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) {
-            return FeaturedBooksCubit(
-              FetchFeaturedBooksUseCase(
-                getIt.get<HomeRepoImpl>(),
-              ),
-            );
-          },
+          create: (context) => FeaturedBooksCubit(getIt.get<HomeRepoImpl>())
+            ..fetchFeaturedBooks(),
         ),
         BlocProvider(
-          create: (context) {
-            return NewestBooksCubit(
-              FetchNewestdBooksUseCase(
-                getIt.get<HomeRepoImpl>(),
-              ),
-            );
-          },
-        )
+          create: (context) =>
+          NewestBooksCubit(getIt.get<HomeRepoImpl>())..fetchNewestBooks(),
+        ),
       ],
       child: MaterialApp.router(
         routerConfig: AppRouter.router,
         debugShowCheckedModeBanner: false,
         theme: ThemeData.dark().copyWith(
-          scaffoldBackgroundColor: kPrimaryColor,
-          textTheme:
-          GoogleFonts.montserratTextTheme(ThemeData.dark().textTheme),
-        ),
+            scaffoldBackgroundColor: kPrimaryColor,
+            textTheme:
+            GoogleFonts.montserratTextTheme(ThemeData.dark().textTheme)),
       ),
     );
   }

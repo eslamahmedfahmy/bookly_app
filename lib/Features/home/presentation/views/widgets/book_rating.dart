@@ -1,43 +1,33 @@
 import 'package:bookly_app/core/utils/styles.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 
 class BookRating extends StatelessWidget {
-  const BookRating({
-    super.key,
-    this.mainAxisAlignment = MainAxisAlignment.start,
-  });
-
-  final MainAxisAlignment mainAxisAlignment;
+  const BookRating({super.key, this.rate, required this.count});
+  final dynamic rate;
+  final int? count;
   @override
   Widget build(BuildContext context) {
     return Row(
-      mainAxisAlignment: mainAxisAlignment,
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
       children: [
         const Icon(
-          FontAwesomeIcons.solidStar,
-          size: 14,
+          Icons.star,
           color: Color(0xffFFDD4F),
         ),
         const SizedBox(
-          width: 6.3,
+          width: 3.0,
         ),
-        const Text(
-          '4.8',
-          style: Styles.textStyle16,
+        Text(
+          rate == null ? '-' : '$rate',
+          style: Styles.text16,
         ),
         const SizedBox(
-          width: 5,
+          width: 9.0,
         ),
-        Opacity(
-          opacity: .5,
-          child: Text(
-            '(245)',
-            style: Styles.textStyle14.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+        Text(
+          count == null ? '0' : '($count)',
+          style: Styles.text14,
         )
       ],
     );

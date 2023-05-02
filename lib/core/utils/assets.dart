@@ -1,4 +1,4 @@
 class AssetsData {
-  static const logo = 'assets/images/Logo.png';
-  static const testImage = 'assets/images/test_image.png';
+  static String logo = 'assets/images/logo.svg';
+  static String searchIcon = 'assets/images/search_icon.svg';
 }

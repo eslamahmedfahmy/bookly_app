@@ -1,51 +1,74 @@
-import 'package:bookly_app/Features/home/data/data_sources/home_local_data_source.dart';
-import 'package:bookly_app/Features/home/data/data_sources/home_remote_data_source.dart';
-import 'package:bookly_app/Features/home/domain/entities/book_entity.dart';
-import 'package:bookly_app/Features/home/domain/repos/home_repo.dart';
+import 'package:bookly_app/Features/home/data/repos/home_repo.dart';
 import 'package:bookly_app/core/errors/failures.dart';
+import 'package:bookly_app/core/models/book_model/book_model.dart';
+import 'package:bookly_app/core/utils/api_service.dart';
 import 'package:dartz/dartz.dart';
 import 'package:dio/dio.dart';
 
+class HomeRepoImpl implements HomeRepo {
+  final ApiServices apiServices;
 
-class HomeRepoImpl extends HomeRepo {
-  final HomeRemoteDataSource homeRemoteDataSource;
-  final HomeLocalDataSource homeLocalDataSource;
-
-  HomeRepoImpl(
-      {required this.homeRemoteDataSource, required this.homeLocalDataSource});
+  HomeRepoImpl(this.apiServices);
   @override
-  Future<Either<Failure, List<BookEntity>>> fetchFeaturedBooks() async {
-    List<BookEntity> booksList;
+  Future<Either<Failure, List<BookModel>>> fetchNewestBooks() async {
     try {
-      booksList = homeLocalDataSource.fetchFeaturedBooks();
-      if (booksList.isNotEmpty) {
-        return right(booksList);
+      var data = await apiServices.get(
+          endPoint:
+          'volumes?q=subject:Success &Filtering=free-ebooks&maxResults=40&download=epub');
+      List<BookModel> newestBooks = [];
+      for (var item in data['items']) {
+        newestBooks.add(BookModel.fromJson(item));
       }
-      booksList = await homeRemoteDataSource.fetchFeaturedBooks();
-      return right(booksList);
+      return right(newestBooks);
     } catch (e) {
       if (e is DioError) {
-        return left(ServerFailure.fromDiorError(e));
+        return left(ServerFailure.fromDioError(e));
+      } else {
+        return left(ServerFailure(e.toString()));
       }
-      return left(ServerFailure(e.toString()));
     }
   }
 
   @override
-  Future<Either<Failure, List<BookEntity>>> fetchNewestBooks() async {
+  Future<Either<Failure, List<BookModel>>> fetchFeaturedBooks() async {
     try {
-      List<BookEntity> books;
-      books = homeLocalDataSource.fetchNewestBooks();
-      if (books.isNotEmpty) {
-        return right(books);
+      var data = await apiServices.get(
+          endPoint:
+          'volumes?q=subject:Self-Help&Sorting=relevance &Filtering=free-ebooks&maxResults=40&download=epub');
+      List<BookModel> featuredBooks = [];
+      for (var item in data['items']) {
+        featuredBooks.add(BookModel.fromJson(item));
       }
-      books = await homeRemoteDataSource.fetchNewestBooks();
-      return right(books);
+      return right(featuredBooks);
     } catch (e) {
       if (e is DioError) {
-        return left(ServerFailure.fromDiorError(e));
+        return left(ServerFailure.fromDioError(e));
+      } else {
+        return left(ServerFailure(e.toString()));
       }
-      return left(ServerFailure(e.toString()));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<BookModel>>> fetchSimilarBooks(
+      {required String category}) async {
+    try {
+      var data = await apiServices.get(
+          endPoint:
+          'volumes?q=subject:$category&Sorting=relevance &Filtering=free-ebooks&maxResults=40&download=epub');
+      List<BookModel> featuredBooks = [];
+      if (data['items'] != null) {
+        for (var item in data['items']) {
+          featuredBooks.add(BookModel.fromJson(item));
+        }
+      }
+      return right(featuredBooks);
+    } catch (e) {
+      if (e is DioError) {
+        return left(ServerFailure.fromDioError(e));
+      } else {
+        return left(ServerFailure(e.toString()));
+      }
     }
   }
 }

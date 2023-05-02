@@ -1,42 +1,65 @@
-import 'package:bookly_app/Features/home/presentation/views/widgets/similar_books_section.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:bookly_app/Features/home/presentation/views/widgets/book_actions.dart';
+import 'package:bookly_app/Features/home/presentation/views/widgets/book_desc.dart';
+import 'package:bookly_app/Features/home/presentation/views/widgets/book_details.dart';
+import 'package:bookly_app/Features/home/presentation/views/widgets/book_image.dart';
+import 'package:bookly_app/Features/home/presentation/views/widgets/similar_books.dart';
+import 'package:bookly_app/core/models/book_model/book_model.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'books_action.dart';
-import 'books_details_sectioni.dart';
-import 'custom_book_details_app_bar.dart';
-import 'custom_book_item.dart';
 
 class BookDetailsViewBody extends StatelessWidget {
-  const BookDetailsViewBody({super.key});
-
+  const BookDetailsViewBody({super.key, required this.book});
+  final BookModel book;
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      slivers: [
-        SliverFillRemaining(
-          hasScrollBody: false,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: Column(
-              children: const [
-                CustomBookDetailsAppBar(),
-                BookDetailsSection(),
-                Expanded(
-                  child: SizedBox(
-                    height: 50,
-                  ),
-                ),
-                SimilarBooksSection(),
-                SizedBox(
-                  height: 40,
-                ),
-              ],
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      child: Column(
+        children: [
+          const SizedBox(
+            height: 30,
+          ),
+
+          //book image
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.45,
+            child: BookImage(
+              imageUrl: book.volumeInfo.imageLinks?.thumbnail,
             ),
           ),
-        ),
-      ],
+          const SizedBox(
+            height: 40.0,
+          ),
+
+          //book (title,author,rating)
+          BookDetails(
+            book: book,
+          ),
+          const SizedBox(
+            height: 37.0,
+          ),
+
+          //book actions (buy,free previw)button
+          BookActions(
+            book: book,
+          ),
+          const SizedBox(
+            height: 46.0,
+          ),
+
+          //book desc
+          BookDesc(
+            book: book,
+          ),
+
+          //similar books (title,BookslistView)
+          SimilarBooks(
+            book: book,
+          ),
+          const SizedBox(
+            height: 40.0,
+          ),
+        ],
+      ),
     );
   }
 }
