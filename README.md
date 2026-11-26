@@ -1,16 +1,51 @@
-# bookly_app
+# Bookly
 
-A new Flutter project.
+A Flutter book discovery app: browse featured and newest books, search, and open book details.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- Home feed with featured and newest books
+- Search
+- Book details with link out to preview
+- Lottie / shimmer loading states, native splash
+- Local caching with Hive
 
-A few resources to get you started if this is your first Flutter project:
+(TODO: add screenshots; confirm API used, likely Google Books.)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Tech stack
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+| Area | Technology |
+| --- | --- |
+| Framework | Flutter, Dart |
+| State management | Bloc / Cubit |
+| Networking | Dio |
+| Error handling | dartz, equatable |
+| DI | get_it |
+| Navigation | go_router |
+| Storage | Hive |
+| UI | lottie, shimmer, flutter_svg, google_fonts, url_launcher |
+
+## Project structure
+
+```
+lib/
+├── core/
+├── Features/
+│   ├── home/
+│   └── Search/
+├── constants.dart
+└── main.dart
+```
+
+## Getting started
+
+```bash
+git clone https://github.com/eslamahmedfahmy/bookly_app.git
+cd bookly_app
+flutter pub get
+flutter run
+```
+
+## Author
+
+**Eslam Fahmy** · [LinkedIn](https://www.linkedin.com/in/eslam-ahmed-fahmy-340220202)
