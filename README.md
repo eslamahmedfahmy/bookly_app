@@ -10,9 +10,12 @@ A Flutter book discovery app powered by the Google Books API: browse featured an
 - Lottie / shimmer loading states, native splash
 - Local caching with Hive
 
-## TODO
+## Screenshots
 
-- [ ] Add app screenshots
+| Loading | Home | Book details |
+| --- | --- | --- |
+| ![Loading](screenshots/splash.png) | ![Home](screenshots/home.png) | ![Book details](screenshots/details.png) |
+| ![Similar books](screenshots/details_similar.png) | ![Search](screenshots/search.png) | ![Search results](screenshots/search_results.png) |
 
 ## Tech stack
 
