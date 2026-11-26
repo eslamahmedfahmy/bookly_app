@@ -1,16 +1,21 @@
 # Bookly
 
-A Flutter book discovery app: browse featured and newest books, search, and open book details.
+A Flutter book discovery app powered by the Google Books API: browse featured and newest books, search, and open book details.
 
 ## Features
 
-- Home feed with featured and newest books
-- Search
+- Home feed with featured and newest books (Google Books API)
+- Search by title
 - Book details with link out to preview
 - Lottie / shimmer loading states, native splash
 - Local caching with Hive
 
-(TODO: add screenshots; confirm API used, likely Google Books.)
+## Screenshots
+
+| Loading | Home | Book details |
+| --- | --- | --- |
+| ![Loading](screenshots/splash.png) | ![Home](screenshots/home.png) | ![Book details](screenshots/details.png) |
+| ![Similar books](screenshots/details_similar.png) | ![Search](screenshots/search.png) | ![Search results](screenshots/search_results.png) |
 
 ## Tech stack
 
@@ -18,7 +23,7 @@ A Flutter book discovery app: browse featured and newest books, search, and open
 | --- | --- |
 | Framework | Flutter, Dart |
 | State management | Bloc / Cubit |
-| Networking | Dio |
+| Networking | Dio (Google Books API) |
 | Error handling | dartz, equatable |
 | DI | get_it |
 | Navigation | go_router |
@@ -45,6 +50,8 @@ cd bookly_app
 flutter pub get
 flutter run
 ```
+
+The app uses the Google Books API. Add your API key to the requests (see `lib/core/utils/api_service.dart`).
 
 ## Author
 
